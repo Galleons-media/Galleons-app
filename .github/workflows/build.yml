@@ -8,22 +8,17 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: kivy/buildozer:latest
+      image: s0hank/buildozer  # ✅ Stable Buildozer Docker image
 
     steps:
-    - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Install dependencies
-      run: |
-        apt-get update
-        apt-get install -y git zip unzip openjdk-11-jdk
+      - name: Build APK
+        run: buildozer -v android debug
 
-    - name: Build APK
-      run: |
-        buildozer android debug
-
-    - name: Upload APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: Galleons-APK
-        path: bin/*.apk
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Galleons-APK
+          path: bin/*.apk
