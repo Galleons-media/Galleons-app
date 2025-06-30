@@ -7,20 +7,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    container:
-      image: kivy/buildozer  # ✅ PUBLIC docker image
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: |
-          apt-get update
-          apt-get install -y zip unzip
-
-      - name: Build APK
-        run: buildozer -v android debug
+      - name: Set up Docker container
+        uses: addnab/docker-run-action@v3
+        with:
+          image: kivy/buildozer
+          options: -v ${{ github.workspace }}:/workspace -w /workspace
+          run: |
+            apt-get update && apt-get install -y zip unzip
+            buildozer -v android debug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
